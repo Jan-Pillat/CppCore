@@ -15,11 +15,17 @@ public:
 	void Remove ();
 
 // ----- SETTERS -----
-	void SetData    (const char* dataToSet,    const std::size_t lengthOfData);
-	void AppendData (const char* dataToAppend, const std::size_t lengthOfData);
+	void CreateEmptyData    (const std::size_t lengthOfData);
+	void ResizeBy           (const std::ptrdiff_t difference);
 	
-	void SetData    (const BinaryData& dataToSet);
-	void AppendData (const BinaryData& dataToAppend);
+	void SetData            (const char* dataToSet,    const std::size_t lengthOfData);
+	void AppendData         (const char* dataToAppend, const std::size_t lengthOfData);
+	
+	void SetData            (const BinaryData& dataToSet);
+	void AppendData         (const BinaryData& dataToAppend);
+	
+	void SetFristByte       (const char byteToSet);
+	void SetLastByte        (const char byteToSet);
 	
 	template <typename T> void Set        (const T dataToSet)
 	{
@@ -35,16 +41,20 @@ public:
 	std::size_t   GetLength               ()  const; // GetLength() – alias for Length(), more explicit in intention
 	char*         CreateAndGetCopiedData  ()  const; // Returns pointer to allocated new buffer
 	
-	char*         Begin  ()    const;
-	char*         Last   ()    const;
-	char*         End    ()    const;
+	char*         GetBeginPointer         ()  const;
+	char*         GetLastPointer          ()  const;
+	char*         GetEndPointer           ()  const;
 
 // ----- OPERATION -----
 	void          Operation (const void (*func)(char* c));
 
+// ----- INFO -----
+	bool          IsEmpty   ();
+
 // ----- INIT -----
 	BinaryData  (const char* newData, const std::size_t newDataLength);
 	BinaryData  (const BinaryData& newData);
+	BinaryData  (const std::size_t newDataLength);
 	BinaryData  ();
 	~BinaryData ();
 	template <typename T> BinaryData (const T newData)

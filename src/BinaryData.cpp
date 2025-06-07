@@ -19,6 +19,31 @@
 
 // ----- SETTERS -----
 
+	void BinaryData::CreateEmptyData (const std::size_t lengthOfData)
+	{
+		Remove ();
+		length  = lengthOfData;
+		data    = new char [lengthOfData];
+		for (std::size_t i = 0;  i<lengthOfData;  i++) data[i] = 0;
+	}
+
+	void BinaryData::ResizeBy (const std::ptrdiff_t difference)
+	{
+		if (difference < 0)
+		{
+			std::size_t absDiff = static_cast<std::size_t>(-difference);
+			
+			if (absDiff >= length)
+				Remove ();
+			else
+				length -= absDiff;
+		}
+		else
+		{
+			AppendData (  BinaryData(absDiff)  );
+		}
+	}
+
 	void BinaryData::SetData (const char* dataToSet,  const std::size_t lengthOfData)
 	{
 		Remove ();
@@ -59,6 +84,16 @@
 	{
 		AppendData(dataToAppend.data, dataToAppend.Length());
 	}
+	
+	void BinaryData::SetFristByte (const char byteToSet)
+	{
+		*(data) = byteToSet;
+	}
+	
+	void BinaryData::SetLastByte (const char byteToSet)
+	{
+		*(data+length-1) = byteToSet;
+	}
 
 
 
@@ -81,17 +116,17 @@
 		return copiedData;
 	}
 	
-	char*   BinaryData::Begin () const
+	char*   BinaryData::GetBeginPointer () const
 	{
 		return data;
 	}
 	
-	char*   BinaryData::Last () const
+	char*   BinaryData::GetLastPointer () const
 	{
 		return data+length-1;
 	}
 	
-	char*   BinaryData::End () const
+	char*   BinaryData::GetEndPointer () const
 	{
 		return data+length;
 	}
@@ -102,9 +137,18 @@
 // ----- OPERATION -----
 	void   BinaryData::Operation (const void (*func)(char* c))
 	{
-		char* end = End();
-		for (char* pointer = Begin();  pointer<end;  pointer++)
+		char* end = GetEndPointer();
+		for (char* pointer = GetBeginPointer();  pointer<end;  pointer++)
 			func(pointer);
+	}
+
+
+
+
+// ----- INFO -----
+	bool   BinaryData::IsEmpty ()
+	{
+		if (data && length>0) 	return false;	else	return true;
 	}
 
 
@@ -122,6 +166,12 @@
 	{
 		Init    ();
 		SetData (newData);
+	}
+
+	BinaryData::BinaryData (const std::size_t newDataLength))
+	{
+		Init            ();
+		CreateEmptyData (newDataLength);
 	}
 
 	BinaryData::BinaryData ()
