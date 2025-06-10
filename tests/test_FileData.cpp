@@ -1,5 +1,16 @@
 
+////////////////////////////////////////////////////
+//  I made this test in a local project           //
+//  and I included it using:                      //
+//  #include "..\CppCore\tests\test_FileData.cpp" //
+////////////////////////////////////////////////////
 
+#include "..\include\FileData.hpp"
+#include "..\src\FileData.cpp"
+#include "..\src\BinaryData.cpp"
+
+using std::cout;
+using std::endl;
 
     // -------------------  LIBRARY  TEST  -------------------
 
@@ -33,13 +44,19 @@
             cout << "fd_test2.txt  load  success \n";
 
 
+        // -------------------- INFO --------------------
+        cout << "Operator tests:\n\n";
+
+
         // -------------------- PRINT DATA --------------------
 
+        cout << "operator []\n";
         cout << "fd_test1.txt  data:" << &fd1[0] << endl;
         cout << "fd_test2.txt  data:" << &fd2[0] << endl;
 
 
         // -------------------- COMPARE FILES --------------------
+        cout << "\n operator == \n";
         if (fd1 == fd2)
             cout << "They are the same.\n";
         else
@@ -47,6 +64,8 @@
 
 
         // --------------------  --------------------
+
+        cout << "\n operators =  +=  + \n";
 
         cout << endl;
         FileData  previous_fd1 = fd1;

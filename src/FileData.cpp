@@ -1,6 +1,19 @@
 
 using std::string;
 
+	const char FileData::errorDescribe[][0x30]
+	{
+		"UNDEFINED",
+		"All correct.",
+		"Can't open!  (INVALID_HANDLE_VALUE)",
+		"Size is to bigger! Max is 4GB",
+		"Incorrect size!  (0xFFFFFFFF)",
+		"Empty file!  (size=0x0)",
+		"NO MEMORY!",
+		"Can't read file!",
+		"Not all data has been loaded!"
+	};
+
 
 	// ------------------- INFO -------------------
 
@@ -74,7 +87,7 @@ using std::string;
 	}
 
 	// ------------------- OPEN AND ALLOCATE -------------------
-	errorType FileData::LoadFile (const string& path, std::size_t sizeAddition)
+	FileData::ErrorType FileData::LoadFile (const string& path, std::size_t sizeAddition)
 	{
 		Remove();  //If some data is loaded, it will be removed for new data.
 
@@ -89,17 +102,26 @@ using std::string;
 		if (fileHandle == INVALID_HANDLE_VALUE )
 			return ERR_INVALID_HANDLE_VALUE;
 
-		std::size_t fileSize = GetFileSize (fileHandle, NULL);
+		DWORD  highPart     = 0;
+		DWORD  lowPart      = GetFileSize (fileHandle, &highPart);
+        UINT64 fullFileSize = (static_cast<UINT64>(highPart)<<32) | lowPart;
+        DWORD  fileSize     = lowPart;
 
-		if (fileSize == -1  ||  fileSize == 0)
+		if (fullFileSize > (1ULL<<(sizeof(DWORD)*8))-1 ) //if (fullFileSize > DWORD_MAX)
+			return ERR_TOO_BIGGER_SIZE;
+
+		if (fileSize == -1)
 			return ERR_INCORRECT_SIZE;
+
+		if (fileSize == 0)
+			return ERR_NULL_SIZE;
 
 		data.CreateEmptyData(fileSize+sizeAddition);
 
 		if (data.IsEmpty())
 			return ERR_NO_MEMORY;
 
-		std::size_t loadedCount = 0;
+		DWORD loadedCount = 0;
 
 		if (!ReadFile (fileHandle, data.GetBeginPointer(), fileSize, &loadedCount, NULL))
 			return ERR_CANT_READ;
@@ -114,7 +136,7 @@ using std::string;
 
 	bool FileData::TryToLoadFile (const string& path, int sizeAddition)
 	{
-		errorType result = LoadFile(path, sizeAddition);
+		ErrorType result = LoadFile(path, sizeAddition);
 
 		if (result != ERR_NO_ERROR)
 		{
@@ -130,7 +152,7 @@ using std::string;
 
 
 	// ------------------- WRITE DATA -------------------
-	bool FileData::WriteDataToFile (char* pathPointer, std::size_t dataToWriteLength)
+	bool FileData::WriteDataToFile (const char* pathPointer, std::size_t dataToWriteLength)
 	{
 		fileHandle = CreateFile (pathPointer,     //File path
 								 GENERIC_WRITE,   //The target is write data.
@@ -143,12 +165,19 @@ using std::string;
 		if (fileHandle == INVALID_HANDLE_VALUE )
 			return false;
 
-		std::size_t writtenDataLength;
-		bool result = WriteFile( fileHandle, data.GetBeginPointer(), dataToWriteLength, &writtenDataLength, NULL ); //Save without null char
+		DWORD writtenDataLength = 0;
+		char* dataPointer = data.GetBeginPointer();
+		bool result = true;
+		while (dataToWriteLength > 0  &&  result==true)
+        {
+            result               = WriteFile( fileHandle, dataPointer, dataToWriteLength, &writtenDataLength, NULL ); //Save without null char
+            dataToWriteLength   -= writtenDataLength;
+            dataPointer         += writtenDataLength;
+        }
 
 		CloseHandle (fileHandle);
 		fileHandle = INVALID_HANDLE_VALUE;
-		
+
 		return result;
 	}
 
@@ -196,7 +225,7 @@ using std::string;
 
 
 	// ------------------- OPERATORS -------------------
-	
+
 	char& FileData::operator [] (std::size_t i)
 	{
 		return this->data[i];
@@ -214,27 +243,29 @@ using std::string;
 
 	FileData& FileData::operator += (const  FileData&  other)
 	{
+        if (isText)
+            data.ResizeBy (-1);
+
 		data  += other.data;
 
 		if (IsGood())
 		{
-			if (isText)
-				data.ResizeBy (-1);
-			
-			char* begin	= data.GetEndPointer() - other.data.GetLength();
-			char* end	= data.GetEndPointer();
-			
-			std::replace	 (begin,  end,  '\0',  '\n');
+		    if (!other.isText)
+            {
+                char* begin	= data.GetEndPointer() - other.data.GetLength();
+                char* end	= data.GetEndPointer();
+                std::replace	 (begin,  end,  '\0',  '\n');
+            }
 			data.SetLastByte ('\0');
 		}
 
 		return *this;
 	}
 
-	FileData FileData::operator + (const  FileData&  left,  const  FileData&  right)
+	FileData FileData::operator + (const  FileData&  other)
 	{
-		FileData newFileData (left);
-		newFileData += right;
+		FileData newFileData (*this);
+		newFileData += other;
 		return newFileData;
 	}
 
