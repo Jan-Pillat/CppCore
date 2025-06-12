@@ -11,7 +11,7 @@ using std::string;
 
 class FileData
 {
-private:
+public:
 
 	enum ErrorType
 	{
@@ -26,10 +26,15 @@ private:
 		ERR_NOT_ALL_DATA
 	};
 
+	enum FileType
+	{
+	    BINARY,
+	    TEXT
+	};
+
+private:
 	static const char errorDescribe[][0x30];
-
-
-	HANDLE       fileHandle;
+	HANDLE       fileHandle = INVALID_HANDLE_VALUE;
 	bool         isText;
 	ErrorType    lastError;
 
@@ -51,9 +56,10 @@ public:
 
 	~FileData();
 	FileData ();
+	FileData (const string& newData);
 	FileData (const FileData& otherData);
 	FileData (const char* newData, int newDataSize);
-	FileData (const string& newData);
+	FileData (const FileType fileType, const string& filePath);
 
 
 	// ------------------- OPEN AND ALLOCATE -------------------

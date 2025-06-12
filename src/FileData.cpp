@@ -68,6 +68,14 @@ using std::string;
 		}
 	}
 
+	FileData::FileData (const FileData::FileType fileType, const string& filePath)
+	{
+		if (fileType == BINARY)
+            LoadBinaryFile (filePath);
+        else
+            LoadTextFile (filePath);
+	}
+
 	FileData::FileData (const char* newData, int newDataSize)
 	{
 		Remove ();
