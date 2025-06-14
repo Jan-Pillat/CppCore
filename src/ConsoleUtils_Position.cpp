@@ -24,4 +24,13 @@ void ConsoleUtils::ShiftWritePosition (const short shiftX, const short shiftY)
 
 }
 
+void ConsoleUtils::SetPositionVisibility (PositionVisibility  visibility)
+{
+    CONSOLE_CURSOR_INFO  cursorInfo;
+
+    GetConsoleCursorInfo (consoleHandle, &cursorInfo);
+    cursorInfo.bVisible = (visibility) ?TRUE :FALSE;
+    SetConsoleCursorInfo (consoleHandle, &cursorInfo);
+}
+
 #endif

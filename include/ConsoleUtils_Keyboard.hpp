@@ -5,8 +5,10 @@
 
 namespace ConsoleUtils
 {
-    void Keyboard_Init  ();
-    void Keyboard_Exit  ();
+    WORD  GetScanCode    ();
+    WORD  GetKeyCode     ();
+    WCHAR GetWchar       ();
+    CHAR  GetChar        ();
 }
 
 #endif // _HPP_ConsoleUtils_Keyboard_

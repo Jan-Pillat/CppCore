@@ -3,95 +3,179 @@
 
 using namespace ConsoleUtils;
 
+//================================================== DRAWING
+
 void ConsoleInterface::DrawRowInterface () const
 {
     SetWritePosition (buttonMarginX, buttonMarginY);
 
     for (int i = 0;  i<options.size();  i++)
     {
-        if (i == optionFocus)
-        {
-            SetColors(buttonFoucsColors);
+        int focusState = (i == optionFocus) ?1 :0 ;
 
-            Write   (focusButtonLeft);
-            Write   (options[i].name);
-            Write   (focusButtonRight);
-        }
-        else
-        {
-            SetColors(buttonColors);
+        SetColors           (buttonColors[focusState]);
 
-            Write   (buttonLeft);
-            Write   (options[i].name);
-            Write   (buttonRight);
-        }
+        Write               (buttonLeft[focusState]);
+        Write               (options[i].name);
+        Write               (buttonRight[focusState]);
 
-        SetColors(otherColors);
-
-        if (i != options.size()-1)
-        {
-            Write   (L"  ");
-        }
+        ShiftWritePosition  (interButtonMargin, 0);
     }
 }
 
+//---------------------------------------------------
+
 void ConsoleInterface::DrawColumnInterface () const
 {
-    SetColors(buttonColors);    //In the most cases, the selected buttons will be drawn, so there is no need to set the colors multiple times.
+    WORD descriptionPosX = buttonMarginX + descriptionPadding;
 
+    // --- FIND THE BIGGEST BUTTON SIDES ---
+    // - LEFT -
+    if (buttonLeft[0].length() > buttonLeft[1].length())
+        descriptionPosX += buttonLeft[0].length();
+    else
+        descriptionPosX += buttonLeft[1].length();
+    // - RIGHT -
+    if (buttonRight[0].length() > buttonRight[1].length())
+        descriptionPosX += buttonRight[0].length();
+    else
+        descriptionPosX += buttonRight[1].length();
+
+    // --- FIND THE BIGGEST BUTTON NAME ---
+    WORD max = 0;
     for (int i = 0;  i<options.size();  i++)
     {
-        SetWritePosition (buttonMarginX, buttonMarginY + (1+interButtonMargin)*i);
+        WORD length = options[i].name.length();
+        if (length > max)
+            max = length;
+    }
+    descriptionPosX += max;
 
-        if (i == optionFocus)
+    // --- DRAW INTERFACE ---
+    for (int i = 0;  i<options.size();  i++)
+    {
+        int focusState = (i == optionFocus) ?1 :0 ;
+
+        SetWritePosition    (buttonMarginX, buttonMarginY + (1+interButtonMargin)*i);
+        SetColors           (buttonColors[focusState]);
+
+        WORD padding      = 0;
+        WORD leftPadding  = 0;
+        WORD rightPadding = 0;
+
+        if ( (equalButtonSize==true) && (options[i].name.length() < max) )
         {
-            SetColors(buttonFoucsColors);
-
-            Write   (focusButtonLeft);
-            Write   (options[i].name);
-            Write   (focusButtonRight);
-
-            SetColors(buttonColors);
+            padding      = max - options[i].name.length();
+            leftPadding  = padding/2;
+            rightPadding = padding-leftPadding;
         }
-        else
-        {
-            Write   (buttonLeft);
-            Write   (options[i].name);
-            Write   (buttonRight);
-        }
+
+        Write               (buttonLeft[focusState]);
+        Write               (' ', leftPadding);
+        Write               (options[i].name);
+        Write               (' ', rightPadding);
+        Write               (buttonRight[focusState]);
+
+        SetWritePosition    (descriptionPosX, buttonMarginY + (1+interButtonMargin)*i);
+        SetColors           (descriptionColors[focusState]);
+
+        Write               (options[i].description);
     }
 
     SetColors(otherColors);
 }
 
+//================================================== MENU MANAGER
+
 void  ConsoleInterface::Start   ()
 {
-    if (style == ROW)
+    SetPositionVisibility (UNVISIBLE);
+
+    while (true)
     {
-        DrawRowInterface ();
+        Clear (otherColors);
+
+        if (style == ROW)
+        {
+            DrawRowInterface ();
+        }
+        else
+        {
+            DrawColumnInterface ();
+        }
+
+        WORD keyCode = GetKeyCode();
+
+        if (keyCode == VK_RETURN)
+        {
+            break;
+        }
+        else if ( (keyCode == VK_UP) || (keyCode == VK_LEFT) )
+        {
+            FocusPreviousOption();
+        }
+        else if ( (keyCode == VK_DOWN) || (keyCode == VK_RIGHT) )
+        {
+            FocusNextOption();
+        }
     }
-    else
-    {
-        DrawColumnInterface ();
-    }
+
+    Clear (otherColors);
+    SetPositionVisibility (VISIBLE);
+
+    options[optionFocus].react();
 }
 
-void  ConsoleInterface::SetButtonColors         (ConsoleColor textColor, ConsoleColor backgroundColor)
+//---------------------------------------------------
+
+void  ConsoleInterface::FocusNextOption   ()
 {
-    buttonColors        = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+    optionFocus++;
+    if (optionFocus>=options.size())
+        optionFocus=0;
 }
 
-void  ConsoleInterface::SetButtonFoucsColors    (ConsoleColor textColor, ConsoleColor backgroundColor)
+//---------------------------------------------------
+
+void  ConsoleInterface::FocusPreviousOption   ()
 {
-    buttonFoucsColors   = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+    optionFocus--;
+    if (optionFocus<0)
+        optionFocus=options.size()-1;
 }
 
-void  ConsoleInterface::SetDescriptionColors    (ConsoleColor textColor, ConsoleColor backgroundColor)
+
+//------------------------------------------------------------------------------------------------------------
+
+void  ConsoleInterface::SetButtonColors             (ConsoleColor textColor, ConsoleColor backgroundColor)
 {
-    descriptionColors   = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+    buttonColors[0]         = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
 }
 
-void  ConsoleInterface::SetOtherColors          (ConsoleColor textColor, ConsoleColor backgroundColor)
+//------------------------------------------------------------------------------------------------------------
+
+void  ConsoleInterface::SetButtonFoucsColors        (ConsoleColor textColor, ConsoleColor backgroundColor)
 {
-    otherColors         = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+    buttonColors[1]         = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+}
+
+//------------------------------------------------------------------------------------------------------------
+
+void  ConsoleInterface::SetDescriptionColors        (ConsoleColor textColor, ConsoleColor backgroundColor)
+{
+    descriptionColors[0]    = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+}
+
+//------------------------------------------------------------------------------------------------------------
+
+void  ConsoleInterface::SetDescriptionFocusColors   (ConsoleColor textColor, ConsoleColor backgroundColor)
+{
+    descriptionColors[1]    = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
+}
+
+//------------------------------------------------------------------------------------------------------------
+
+void  ConsoleInterface::SetOtherColors              (ConsoleColor textColor, ConsoleColor backgroundColor)
+{
+    otherColors             = static_cast<ConsoleColor>( (backgroundColor << 4) + textColor );
 }

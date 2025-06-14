@@ -5,8 +5,15 @@
 
 namespace ConsoleUtils
 {
-    void SetWritePosition   (const short x,      const short y);
-    void ShiftWritePosition (const short shiftX, const short shiftY);
+    enum PositionVisibility
+    {
+        UNVISIBLE,
+        VISIBLE
+    };
+
+    void SetWritePosition       (const short x,      const short y);
+    void ShiftWritePosition     (const short shiftX, const short shiftY);
+    void SetPositionVisibility  (PositionVisibility  visibility);
 }
 
 #endif // _HPP_ConsoleUtils_Keyboard_

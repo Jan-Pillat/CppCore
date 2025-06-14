@@ -41,6 +41,30 @@ void ConsoleUtils::WriteLN (const std::wstring& text)
     WriteLN (&text[0]);
 }
 
+void ConsoleUtils::Write (const wchar_t ch)
+{
+    wchar_t str[2] = { ch, 0 };
+    Write (&str[0]);
+}
+
+void ConsoleUtils::WriteLN (const wchar_t ch)
+{
+    wchar_t str[2] = { ch, 0 };
+    WriteLN (&str[0]);
+}
+
+void ConsoleUtils::Write (const wchar_t ch, DWORD count)
+{
+    for (; count > 0; count--)
+        Write (ch);
+}
+
+void ConsoleUtils::WriteLN (const wchar_t ch, DWORD count)
+{
+    for (; count > 0; count--)
+        WriteLN (ch);
+}
+
 
 // ---------- ANSI ----------
 
@@ -64,6 +88,30 @@ void ConsoleUtils::Write (const std::string& text)
 void ConsoleUtils::WriteLN (const std::string& text)
 {
     WriteLN (&text[0]);
+}
+
+void ConsoleUtils::Write (const char ch)
+{
+    char str[2] = { ch, 0 };
+    Write (&str[0]);
+}
+
+void ConsoleUtils::WriteLN (const char ch)
+{
+    char str[2] = { ch, 0 };
+    WriteLN (&str[0]);
+}
+
+void ConsoleUtils::Write (const char ch, DWORD count)
+{
+    for (; count > 0; count--)
+        Write (ch);
+}
+
+void ConsoleUtils::WriteLN (const char ch, DWORD count)
+{
+    for (; count > 0; count--)
+        WriteLN (ch);
 }
 
 

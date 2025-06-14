@@ -4,7 +4,6 @@
 #include <windows.h>
 #include <vector>
 #include <string>
-#include <iostream>
 #include "ConsoleUtils.hpp" //enum:ConsoleColor (RED,WHITE,etc.); void:SetColors; void:Write;
 #include "StringUtils.hpp"  //wstring:ConvertCharTableToWstring
 
@@ -15,12 +14,15 @@ class ConsoleInterface
 private:
     void DrawRowInterface    () const;
     void DrawColumnInterface () const;
+    void FocusNextOption     ();
+    void FocusPreviousOption ();
 public:
 
     struct option
     {
         std::wstring name;
         std::wstring description;
+        void (*react)();
     };
 
     enum InterfaceStyle
@@ -41,25 +43,26 @@ public:
 
     InterfaceStyle  style = COLUMN;
 
-    short           buttonMarginX = 5;
-    short           buttonMarginY = 2;
-    short           interButtonMargin = 0;
+    short           buttonMarginX           = 5;
+    short           buttonMarginY           = 2;
+    short           interButtonMargin       = 0;
+    short           descriptionPadding      = 2;
 
-    std::wstring    buttonLeft       = L"[ ";
-    std::wstring    buttonRight      = L" ]";
-    std::wstring    focusButtonLeft  = L"< ";
-    std::wstring    focusButtonRight = L" >";
+    std::wstring    buttonLeft[2]           = { L"[ ", L"< " };
+    std::wstring    buttonRight[2]          = { L" ]", L" >" };
 
-    ConsoleColor  buttonColors       =   WHITE;
-    ConsoleColor  buttonFoucsColors  =   WHITE;
-    ConsoleColor  descriptionColors  =   WHITE;
-    ConsoleColor  otherColors        =   WHITE;
+    ConsoleColor    buttonColors[2]         = { WHITE, static_cast<ConsoleColor>(WHITE<<4) };   //0 = not focused; 1 = focus
+    ConsoleColor    descriptionColors[2]    = { WHITE, WHITE };                                 //0 = not focused; 1 = focus
+    ConsoleColor    otherColors             =   WHITE;
+
+    bool            equalButtonSize         =   true;
 
     //Functions that are more readable than using the variables
-    void SetButtonColors        (ConsoleColor textColor, ConsoleColor backgroundColor);
-    void SetButtonFoucsColors   (ConsoleColor textColor, ConsoleColor backgroundColor);
-    void SetDescriptionColors   (ConsoleColor textColor, ConsoleColor backgroundColor);
-    void SetOtherColors         (ConsoleColor textColor, ConsoleColor backgroundColor);
+    void SetButtonColors            (ConsoleColor textColor, ConsoleColor backgroundColor);
+    void SetButtonFoucsColors       (ConsoleColor textColor, ConsoleColor backgroundColor);
+    void SetDescriptionColors       (ConsoleColor textColor, ConsoleColor backgroundColor);
+    void SetDescriptionFocusColors  (ConsoleColor textColor, ConsoleColor backgroundColor);
+    void SetOtherColors             (ConsoleColor textColor, ConsoleColor backgroundColor);
 
     void Start              ();
 /*
@@ -73,12 +76,18 @@ public:
 
     //--------------------------------------------------------- TEMPLATES
     template <typename NAME, typename DESC>
-    void AddOption          (NAME name, DESC description) //Auto convert char to wchar_t
+    void AddOption          ( void (*pointer)(), NAME name, DESC description ) //Auto convert char to wchar_t
     {
-        static_assert (std::is_same_v<std::decay_t<NAME>, const char*> || std::is_same_v<std::decay_t<NAME>, const wchar_t*>, "Name type is wrong! AddOption (name, description) accepts only char* or wchar_t*");
-        static_assert (std::is_same_v<std::decay_t<DESC>, const char*> || std::is_same_v<std::decay_t<DESC>, const wchar_t*>, "Descitpion type is wrong! AddOption (name, description) accepts only char* or wchar_t*");
+        static_assert (std::is_same_v<std::decay_t<NAME>, const char*> || std::is_same_v<std::decay_t<NAME>, const wchar_t*>, "Name type is wrong! AddOption (react, name, description) accepts only char* or wchar_t* for name and description");
+        static_assert (std::is_same_v<std::decay_t<DESC>, const char*> || std::is_same_v<std::decay_t<DESC>, const wchar_t*>, "Descitpion type is wrong! AddOption (react, name, description) accepts only char* or wchar_t* for name and description");
 
         option newOption;
+
+        // ----- SCRIPT -----
+        if (pointer == nullptr)
+            return;
+        else
+            newOption.react = pointer;
 
         // ----- NAME -----
         if constexpr (std::is_same_v<std::decay_t<NAME>, const char*>)
