@@ -77,6 +77,10 @@ void ConsoleInterface::DrawInterface () const
         optionPosY += buttonRowSpacing;
     }
 
+    //PREVENT DESCRIPTION FROM OVERLAPPING BUTTONS, IT'S IMPORTANT FOR ROW TABLE
+    if ( (optionPosY==buttonMarginY) && (options.size()>0) )
+        optionPosY += 1;
+
     // --- DRAW OPTION DESCRIPTION ---
     //COUNT DESCRIPTIONS
     int optionDescriptionCount = 0;
@@ -96,16 +100,16 @@ void ConsoleInterface::DrawInterface () const
         {
             SetWritePosition    (0, GetWindowSizeY()-allocatedSpace);
             //BORDER
-            if (allocatedSpace > 1)
+            if ( (allocatedSpace > 1) && (optionDescriptionBorder != L'\0') )
             {
                 SetColors           (optionDescriptionBorderColors);
                 WriteLN             (optionDescriptionBorder, GetWindowSizeX());
-                allocatedSpace   -= 1;
+                allocatedSpace      -= 1;
             }
             //DESCRIPTION
             SetColors           (optionDescriptionColors);
             Rectangle           (' ', optionDescriptionColors, 0, GetWindowSizeY()-allocatedSpace, GetWindowSizeX(), GetWindowSizeY());
-            Write               (options[optionFocus].optionDescription);
+            WriteML             (options[optionFocus].optionDescription);
         }
     }
 
