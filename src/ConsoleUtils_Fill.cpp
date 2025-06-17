@@ -62,6 +62,46 @@ void ConsoleUtils::Fill (const char ch, const ConsoleColor text, const ConsoleCo
 
 //---------------------------------------------------------------------------------
 
+void ConsoleUtils::Rectangle (const char ch, const WORD colors, WORD beginX, WORD beginY, WORD endX, WORD endY)
+{
+    CONSOLE_SCREEN_BUFFER_INFO  csbi;
+    GetConsoleScreenBufferInfo(consoleHandle, &csbi);
+
+    auto windowSizeX  = csbi.srWindow.Right  - csbi.srWindow.Left + 1;
+    auto windowSizeY  = csbi.srWindow.Bottom - csbi.srWindow.Top  + 1;
+
+    if (beginX > endX)  std::swap(beginX, endX);
+    if (beginY > endY)  std::swap(beginY, endY);
+
+    if (beginX > windowSizeX)
+        return;
+    if (endX   < 0)
+        return;
+    if (endX > windowSizeX)
+        endX -= endX-windowSizeX;
+
+    if (beginY > windowSizeY)
+        return;
+    if (endY   < 0)
+        return;
+    if (endY > windowSizeY)
+        endY -= endX-windowSizeY;
+
+
+    auto rectangleSizeX = endX-beginX;
+    auto rectangleSizeY = endY-beginY;
+
+    DWORD written;
+
+    for (int i=0;  i<rectangleSizeY;  i++)
+    {
+        FillConsoleOutputAttribute(consoleHandle, colors, rectangleSizeX, { beginX, beginY+i }, &written);
+        FillConsoleOutputCharacter(consoleHandle, ch,     rectangleSizeX, { beginX, beginY+i }, &written);
+    }
+}
+
+//---------------------------------------------------------------------------------
+
 void ConsoleUtils::Clear ()
 {
     CharFill (' ');

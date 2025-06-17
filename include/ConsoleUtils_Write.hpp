@@ -4,8 +4,13 @@
 #include <windows.h>
 #include <string>
 
+    //LN = Line End
+    //US = Unsafe
+
 namespace ConsoleUtils
 {
+    void WriteLN    ();
+
     void Write      (const std::wstring& text);
     void Write      (const wchar_t*      text);
     void Write      (const wchar_t       ch  );
@@ -26,7 +31,11 @@ namespace ConsoleUtils
     void WriteLN    (const char          ch  );
     void WriteLN    (const char          ch, DWORD count);
 
-    void WriteLN    ();
+    void USWrite    (const wchar_t*      text);
+    void USWrite    (const char*         text);
+
+    void USWriteLN  (const wchar_t*      text);
+    void USWriteLN  (const char*         text);
 }
 
 #endif // _HPP_ConsoleUtils_Write_

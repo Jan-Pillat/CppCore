@@ -2,6 +2,7 @@
 #define _HPP_ConsoleUtils_Fill_
 
 #include <windows.h>
+#include <algorithm>
 
 namespace ConsoleUtils
 {
@@ -12,6 +13,8 @@ namespace ConsoleUtils
 
     void Fill           (const char ch, const WORD colors);
     void Fill           (const char ch, const ConsoleColor text, const ConsoleColor background);
+
+    void Rectangle      (const char ch, const WORD colors, const WORD beginX, const WORD beginY, const WORD endX, const WORD endY);
 
     void Clear          ();
     void Clear          (const char ch);
