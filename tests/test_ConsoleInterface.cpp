@@ -32,8 +32,8 @@ int ConsoleInterface_LibraryTest ()
 // ----- COLORS -----
     consoleInterface.additionalDrawing  =  additional;
 
-    consoleInterface.SetButtonColors        (WHITE, GRAY);
-    consoleInterface.SetButtonFoucsColors   (WHITE, BLACK);
+    consoleInterface.SetButtonColors        (MAGENTA, BLUE);
+    consoleInterface.SetButtonFoucsColors   (MAGENTA, BLACK);
 
     consoleInterface.SetButtonDescriptionColors         (LIGHT_YELLOW, BLACK);
     consoleInterface.SetButtonDescriptionFocusColors    (YELLOW, BLACK);
@@ -49,6 +49,9 @@ int ConsoleInterface_LibraryTest ()
     system ("pause");
 
 // ----- optionDescription = empty => no description zone -----
+    consoleInterface.SetButtonColors        (MAGENTA, BLACK);
+    consoleInterface.buttonLeft[1]  = L"<-";
+    consoleInterface.buttonRight[1] = L"->";
     consoleInterface.additionalDrawing  =  nullptr;
     consoleInterface.options.clear();
     consoleInterface.AddOption( opcja1,  "opt1",     "desc1",    "");

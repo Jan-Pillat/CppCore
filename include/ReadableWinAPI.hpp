@@ -1,6 +1,6 @@
 
-#ifndef JANWINAPI
-#define JANWINAPI
+#ifndef _HPP_ReadableWinAPI_
+#define _HPP_ReadableWinAPI_
 
 
 //g++ nie rozumie tej dyrektywy, ale jest ona tutaj dla przenośności kodu.
@@ -8,10 +8,11 @@
 #include <windows.h>
 #include <tchar.h>
 
-#define  ANSIorUNICODE(txt)        _T(txt)
-#define  Window_OpenFile(settings)  GetOpenFileName( (OPENFILENAME*) settings )
+#define  ANSIorUNICODE(txt)             _T(txt)
+#define  OpenWindow_OpenFile(settings)  GetOpenFileName( (OPENFILENAME*) settings )
+#define  OpenWindow_SaveFile(settings)  GetSaveFileName( (OPENFILENAME*) settings )
 
-typedef struct Window_OpenFile_Settings
+typedef struct FileSelectionSettings
 {
   DWORD         structSize;             // Rozmiar struktury - na podstawie tego Windows wie z jak¹ wersj¹ ma do czynienia
   HWND          owner;                  // Uchwyt do okna nadrzêdnego – jeœli aplikacja ma GUI. NULL = brak w³aœciciela (np. aplikacja konsolowa)
@@ -51,5 +52,30 @@ typedef struct Window_OpenFile_Settings
 
   DWORD         extensionFlags;         // Rozszerzone flagi – np. OFN_EX_NOPLACESBAR (ukrywa pasek szybkiego dostêpu)
 };
+
+class FileSelector
+{
+	char gotPath[MAX_PATH]    {0};
+	FileSelectionSettings     settings{};
+	
+	FileSelector ()
+	{
+		settings.structSize  =   sizeof(FileSelectionSettings);
+		settings.fileFilters =   ANSIorUNICODE("All files\0*.*\0");
+		settings.pathBuffer  =   gotPath;
+		settings.bufferSize  =   sizeof(gotPath);
+		settings.flags       =   OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
+	}
+	
+	GetPath_OpenFile ()
+	{
+		OpenWindow_OpenFile (&settings)
+	}
+	
+	GetPath_SaveFile ()
+	{
+		OpenWindow_SaveFile (&settings)
+	}
+}
 
 #endif
