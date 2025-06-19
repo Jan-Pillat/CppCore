@@ -1,7 +1,7 @@
 #ifndef _CPP_ConsoleUtils_Size_
 #define _CPP_ConsoleUtils_Size_
 
-#include "../include/ConsoleUtils_Size.hpp"
+#include "../../include/ConsoleUtils/Size.hpp"
 
 #ifndef _CPP_ConsoleUtils_consoleHandle
 #define _CPP_ConsoleUtils_consoleHandle

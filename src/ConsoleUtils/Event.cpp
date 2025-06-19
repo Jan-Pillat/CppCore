@@ -1,7 +1,7 @@
 #ifndef _CPP_ConsoleUtils_Event_
 #define _CPP_ConsoleUtils_Event_
 
-#include "../include/ConsoleUtils_Event.hpp"
+#include "../../include/ConsoleUtils/Event.hpp"
 
 #ifndef _CPP_ConsoleUtils_consoleInputHandle
 #define _CPP_ConsoleUtils_consoleInputHandle

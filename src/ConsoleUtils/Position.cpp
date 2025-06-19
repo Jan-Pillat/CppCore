@@ -1,7 +1,7 @@
 #ifndef _CPP_ConsoleUtils_Position_
 #define _CPP_ConsoleUtils_Position_
 
-#include "../include/ConsoleUtils_Position.hpp"
+#include "../../include/ConsoleUtils/Position.hpp"
 
 #ifndef _CPP_ConsoleUtils_consoleHandle
 #define _CPP_ConsoleUtils_consoleHandle

@@ -1,7 +1,7 @@
 #ifndef _CPP_ConsoleUtils_Keyboard_
 #define _CPP_ConsoleUtils_Keyboard_
 
-#include "../include/ConsoleUtils_Keyboard.hpp"
+#include "../../include/ConsoleUtils/Keyboard.hpp"
 
 #ifndef _CPP_ConsoleUtils_consoleInputHandle
 #define _CPP_ConsoleUtils_consoleInputHandle

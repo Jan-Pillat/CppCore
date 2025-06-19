@@ -1,7 +1,7 @@
 #ifndef _CPP_ConsoleUtils_Write_
 #define _CPP_ConsoleUtils_Write_
 
-#include "../include/ConsoleUtils_Write.hpp"
+#include "../../include/ConsoleUtils/Write.hpp"
 
 #ifndef _CPP_ConsoleUtils_consoleHandle
 #define _CPP_ConsoleUtils_consoleHandle

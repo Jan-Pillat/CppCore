@@ -1,7 +1,7 @@
 #ifndef _CPP_ConsoleUtils_Colors_
 #define _CPP_ConsoleUtils_Colors_
 
-#include "../include/ConsoleUtils_Colors.hpp"
+#include "../../include/ConsoleUtils/Colors.hpp"
 
 #ifndef _CPP_ConsoleUtils_consoleHandle
 #define _CPP_ConsoleUtils_consoleHandle
