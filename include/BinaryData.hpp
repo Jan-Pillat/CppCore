@@ -2,10 +2,11 @@
 #define _HPP_BinaryData_
 
 #include <cstddef>
+#include <cstring>
 
 class BinaryData
 {
-private:
+protected:
 	char*         data;
 	std::size_t   length;
 
@@ -68,6 +69,7 @@ public:
 	BinaryData& operator  = (const char* str);
 	BinaryData& operator  = (const BinaryData& b);
 	BinaryData& operator += (const BinaryData& b);
+	bool		operator == (const BinaryData& other);
 
 	template <typename T> BinaryData& operator  = (const T dataToSet)
 	{

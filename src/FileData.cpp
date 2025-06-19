@@ -18,7 +18,7 @@ using std::string;
 
 	// ------------------- INFO -------------------
 
-	bool FileData::IsGood     ()  const   { return !data.IsEmpty(); }
+	bool FileData::IsGood     ()  const   { return !IsEmpty(); }
 	bool FileData::IsText     ()  const   { return (IsGood()) ?isText :false; }
 
 	const char* FileData::GetErrorDescribePointer () const
@@ -32,7 +32,7 @@ using std::string;
 
 	void    FileData::Remove  ()
 	{
-		data.Remove();
+		BinaryData::Remove();
 		lastError = ERR_NO_ERROR;
 
 		if (fileHandle != INVALID_HANDLE_VALUE )
@@ -59,7 +59,7 @@ using std::string;
 
 		if (otherData.IsGood())
 		{
-			data      = otherData.data;
+            SetData  (otherData);
 			isText    = otherData.isText;
 			lastError = otherData.lastError;
 		}
@@ -81,7 +81,7 @@ using std::string;
 	{
 		Remove ();
 
-		data.SetData(newData, newDataSize);
+		SetData  (newData, newDataSize);
 		isText    = false;
 		lastError = ERR_NO_ERROR;
 	}
@@ -90,7 +90,7 @@ using std::string;
 	{
 		Remove ();
 
-		data      = &newData[0];
+		SetData (&newData[0], newData.length());
 		isText    = true;
 		lastError = ERR_NO_ERROR;
 	}
@@ -125,14 +125,14 @@ using std::string;
 		if (fileSize == 0)
 			return ERR_NULL_SIZE;
 
-		data.CreateEmptyData(fileSize+sizeAddition);
+		CreateEmptyData(fileSize+sizeAddition);
 
-		if (data.IsEmpty())
+		if (IsEmpty())
 			return ERR_NO_MEMORY;
 
 		DWORD loadedCount = 0;
 
-		if (!ReadFile (fileHandle, data.GetBeginPointer(), fileSize, &loadedCount, NULL))
+		if (!ReadFile (fileHandle, GetBeginPointer(), fileSize, &loadedCount, NULL))
 			return ERR_CANT_READ;
 
 		if (loadedCount != fileSize)
@@ -175,7 +175,7 @@ using std::string;
 			return false;
 
 		DWORD writtenDataLength = 0;
-		char* dataPointer = data.GetBeginPointer();
+		char* dataPointer = GetBeginPointer();
 		bool result = true;
 		while (dataToWriteLength > 0  &&  result==true)
         {
@@ -200,7 +200,7 @@ using std::string;
 
 	bool FileData::SaveBinaryFile (const string& path)
 	{
-		return WriteDataToFile (&path[0], data.GetLength());
+		return WriteDataToFile (&path[0], length);
 	}
 
 
@@ -215,10 +215,8 @@ using std::string;
 		//Convert to text
 		if (IsGood())
 		{
-			char* begin = data.GetBeginPointer();
-			char* end   = data.GetBeginPointer() + data.GetLength();
-			std::replace (begin, end, '\0', '\n');
-			data.SetLastByte('\0');
+			std::replace (GetBeginPointer(), GetEndPointer(), '\0', '\n');
+			SetLastByte('\0');
 		}
 		isText = true;
 
@@ -228,23 +226,18 @@ using std::string;
 
 	bool FileData::SaveTextFile (const string& path)
 	{
-		return WriteDataToFile (&path[0], data.GetLength()-1);
+		return WriteDataToFile (&path[0], length-1);
 	}
 
 
 
 	// ------------------- OPERATORS -------------------
 
-	char& FileData::operator [] (std::size_t i)
-	{
-		return this->data[i];
-	}
-
 	FileData& FileData::operator = (const  FileData&  other)
 	{
 		if (this == &other) return *this;
 
-		data      = other.data;
+		SetData  (other);
 		isText    = other.isText;
 		lastError = other.lastError;
 		return *this;
@@ -253,19 +246,19 @@ using std::string;
 	FileData& FileData::operator += (const  FileData&  other)
 	{
         if (isText)
-            data.ResizeBy (-1);
+            ResizeBy (-1);
 
-		data  += other.data;
+        AppendData(other);
 
 		if (IsGood())
 		{
 		    if (!other.isText)
             {
-                char* begin	= data.GetEndPointer() - other.data.GetLength();
-                char* end	= data.GetEndPointer();
+                char* begin	= GetEndPointer() - other.GetLength();
+                char* end	= GetEndPointer();
                 std::replace	 (begin,  end,  '\0',  '\n');
             }
-			data.SetLastByte ('\0');
+			SetLastByte ('\0');
 		}
 
 		return *this;
@@ -276,14 +269,4 @@ using std::string;
 		FileData newFileData (*this);
 		newFileData += other;
 		return newFileData;
-	}
-
-	bool FileData::operator == (const  FileData&  other)
-	{
-		if (this->data.GetLength() != other.data.GetLength())
-		{
-			return false;
-		}
-
-		return  !memcmp (this->data.GetBeginPointer(), other.data.GetBeginPointer(), this->data.GetLength());
 	}

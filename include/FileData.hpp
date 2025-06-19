@@ -10,7 +10,7 @@
 
 using std::string;
 
-class FileData
+class FileData : public BinaryData
 {
 public:
 
@@ -40,7 +40,6 @@ private:
 	ErrorType    lastError;
 
 public:
-	BinaryData  data;
 
 
 	// ------------------- INFO -------------------
@@ -88,11 +87,9 @@ public:
 
 	// ------------------- OPERATORS -------------------
 
-	char&		operator [] (std::size_t i);
 	FileData&	operator  = (const  FileData&  other);
 	FileData&	operator += (const  FileData&  other);
 	FileData	operator  + (const  FileData&  other);
-	bool		operator == (const  FileData&  other);
 };
 
 

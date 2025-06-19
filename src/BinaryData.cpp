@@ -25,7 +25,7 @@
 		Remove ();
 		length  = lengthOfData;
 		data    = new char [lengthOfData];
-		for (std::size_t i = 0;  i<lengthOfData;  i++) data[i] = 0;
+		memset (data, 0, lengthOfData);
 	}
 
 	void BinaryData::ResizeBy (const std::ptrdiff_t difference)
@@ -50,7 +50,7 @@
 		Remove ();
 		length  = lengthOfData;
 		data    = new char [lengthOfData];
-		for (std::size_t i = 0;  i<lengthOfData;  i++) data[i] = dataToSet[i];
+		memcpy (data, dataToSet, lengthOfData);
 	}
 
 	void BinaryData::AppendData (const char* dataToAppend,  const std::size_t lengthOfData)
@@ -205,10 +205,7 @@
 	// -- OPERATOR  =  --
 	BinaryData&  BinaryData::operator  = (const char* str)
 	{
-		const char* nullChar = str;
-        while (*nullChar != 0) nullChar++;
-
-		this->SetData(str, static_cast<std::size_t>(nullChar-str));
+		this->SetData(str, strlen(str));
 		return *this;
 	}
 
@@ -226,5 +223,17 @@
 	{
 		this->AppendData(b);
 		return *this;
+	}
+
+
+	// -- OPERATOR  ==  --
+	bool  BinaryData::operator == (const BinaryData& other)
+	{
+		if (this->length != other.length)
+		{
+			return false;
+		}
+
+		return  !memcmp (this->data, other.data, length);
 	}
 

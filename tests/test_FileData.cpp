@@ -6,8 +6,8 @@
 ////////////////////////////////////////////////////
 
 #include "..\include\FileData.hpp"
-#include "..\src\FileData.cpp"
-#include "..\src\BinaryData.cpp"
+//#include "..\src\FileData.cpp"
+//#include "..\src\BinaryData.cpp"
 
 using std::cout;
 using std::endl;
@@ -51,8 +51,10 @@ using std::endl;
         // -------------------- PRINT DATA --------------------
 
         cout << "operator []\n";
-        cout << "fd_test1.txt  data:" << &fd1[0] << endl;
-        cout << "fd_test2.txt  data:" << &fd2[0] << endl;
+        cout << "fd_test1.txt  &data[0]:" << &fd1[0] << endl;
+        cout << "fd_test2.txt  &data[0]:" << &fd2[0] << endl;
+        cout << "fd_test1.txt  data[10]:" << fd1[10] << endl;
+        cout << "fd_test2.txt  data[10]:" << fd2[10] << endl;
 
 
         // -------------------- COMPARE FILES --------------------
@@ -75,4 +77,13 @@ using std::endl;
         cout << "File1 = File2:" << &fd1[0] << endl << endl;
         fd1 = fd2 + previous_fd1 + fd2;
         cout << "File1 = File2 + previous File1 + File2:" << &fd1[0] << endl << endl;
+
+
+        // -------------------- SECOND TEST COMPARE --------------------
+        cout << "\n operator == \n";
+        cout << "File2 == File2; result:\n";
+        if (fd2 == fd2)
+            cout << "They are the same.\n";
+        else
+            cout << "They AREN't the same.\n";
     }
