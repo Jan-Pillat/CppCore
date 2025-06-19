@@ -55,27 +55,28 @@ typedef struct FileSelectionSettings
 
 class FileSelector
 {
-	char gotPath[MAX_PATH]    {0};
-	FileSelectionSettings     settings{};
-	
-	FileSelector ()
-	{
+public:
+	char path[MAX_PATH]     {0};
+	FileSelectionSettings   settings{};
+
+    FileSelector ()
+    {
 		settings.structSize  =   sizeof(FileSelectionSettings);
 		settings.fileFilters =   ANSIorUNICODE("All files\0*.*\0");
-		settings.pathBuffer  =   gotPath;
-		settings.bufferSize  =   sizeof(gotPath);
+		settings.pathBuffer  =   path;
+		settings.bufferSize  =   sizeof(path);
 		settings.flags       =   OFN_FILEMUSTEXIST | OFN_PATHMUSTEXIST;
-	}
-	
-	GetPath_OpenFile ()
-	{
-		OpenWindow_OpenFile (&settings)
-	}
-	
-	GetPath_SaveFile ()
-	{
-		OpenWindow_SaveFile (&settings)
-	}
-}
+    }
+
+    bool GetPath_OpenFile ()
+    {
+        return OpenWindow_OpenFile (&settings);
+    }
+
+    bool GetPath_SaveFile ()
+    {
+        return OpenWindow_SaveFile (&settings);
+    }
+};
 
 #endif
