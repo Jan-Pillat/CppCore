@@ -5,6 +5,7 @@
 //  #include "..\CppCore\tests\test_FileData.cpp" //
 ////////////////////////////////////////////////////
 
+#include <iostream>
 #include "..\include\FileData.hpp"
 //#include "..\src\FileData.cpp"
 //#include "..\src\BinaryData.cpp"
