@@ -30,18 +30,16 @@
 
 	void BinaryData::ResizeBy (const std::ptrdiff_t difference)
 	{
-        std::size_t absDiff = static_cast<std::size_t>(-difference);
-
 		if (difference < 0)
 		{
-			if (absDiff >= length)
+			if (-difference >= length)
 				Remove ();
 			else
-				length -= absDiff;
+				length -= -difference;
 		}
 		else
 		{
-			AppendData (  BinaryData(absDiff)  );
+			AppendData (  BinaryData((size_t)difference)  );
 		}
 	}
 
