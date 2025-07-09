@@ -74,6 +74,16 @@
 		data    = bothData;
 	}
 
+	void BinaryData::SetData (const char* dataToSet)
+	{
+		SetData (dataToSet, strlen(dataToSet));
+	}
+
+	void BinaryData::AppendData (const char* dataToAppend)
+	{
+		AppendData(dataToAppend, strlen(dataToAppend));
+	}
+
 	void BinaryData::SetData (const BinaryData& dataToSet)
 	{
 		SetData (dataToSet.data, dataToSet.Length());

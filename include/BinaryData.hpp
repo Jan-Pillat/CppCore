@@ -22,6 +22,9 @@ public:
 	void SetData            (const char* dataToSet,    const std::size_t lengthOfData);
 	void AppendData         (const char* dataToAppend, const std::size_t lengthOfData);
 
+	void SetData            (const char* dataToSet);
+	void AppendData         (const char* dataToAppend);
+
 	void SetData            (const BinaryData& dataToSet);
 	void AppendData         (const BinaryData& dataToAppend);
 
