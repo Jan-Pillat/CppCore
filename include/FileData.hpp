@@ -56,10 +56,23 @@ public:
 
 	~FileData();
 	FileData ();
-	FileData (const string& newData);
-	FileData (const FileData& otherData);
-	FileData (const char* newData, int newDataSize);
-	FileData (const FileType fileType, const string& filePath);
+	FileData (const string&     newData);
+	FileData (const FileData&   otherData);
+	FileData (const char*       newData);
+	FileData (const char*       newData,    size_t newDataSize);
+	FileData (const FileType    fileType,   const string& filePath);
+
+
+
+	// ------------------- SETTERS -------------------
+
+	using BinaryData::SetData;          //To odblokowuje wszystkie odmiany SetData z BinaryData. W przeciwnym razie wszystko zostanie ukryte.
+	using BinaryData::AppendData;
+
+	void SetData            (const char* dataToSet);
+	void SetData            (const string& dataToSet);
+	void AppendData         (const char* dataToAppend);
+	void AppendData         (const string& dataToAppend);
 
 
 	// ------------------- OPEN AND ALLOCATE -------------------

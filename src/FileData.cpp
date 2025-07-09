@@ -77,12 +77,21 @@ using std::string;
             LoadTextFile (filePath);
 	}
 
-	FileData::FileData (const char* newData, int newDataSize)
+	FileData::FileData (const char* newData, size_t newDataSize)
 	{
 		Remove ();
 
 		SetData  (newData, newDataSize);
 		isText    = false;
+		lastError = ERR_NO_ERROR;
+	}
+
+	FileData::FileData (const char* newData)
+	{
+		Remove ();
+
+		SetData  (newData, strlen(newData));
+		isText    = true;
 		lastError = ERR_NO_ERROR;
 	}
 
@@ -94,6 +103,45 @@ using std::string;
 		isText    = true;
 		lastError = ERR_NO_ERROR;
 	}
+
+
+
+	// ------------------- DATA -------------------
+	void FileData::SetData (const char* dataToSet)
+	{
+        isText = true;
+        SetData (dataToSet, strlen(dataToSet)+1);
+	}
+
+	void FileData::AppendData (const char* dataToAppend)
+	{
+	    if (data != nullptr)
+        {
+            isText = true;
+            AppendData(dataToAppend, strlen(dataToAppend)+1);
+        }
+        else if (isText)
+        {
+            ResizeBy(-1);
+            AppendData(dataToAppend, strlen(dataToAppend)+1);
+        }
+        else
+        {
+            AppendData(dataToAppend, strlen(dataToAppend));
+        }
+	}
+
+	void FileData::SetData (const string& dataToSet)
+	{
+        FileData::SetData (&dataToSet[0]);
+	}
+
+	void FileData::AppendData (const string& dataToAppend)
+	{
+        FileData::AppendData (&dataToAppend[0]);
+	}
+
+
 
 	// ------------------- OPEN AND ALLOCATE -------------------
 	FileData::ErrorType FileData::LoadFile (const string& path, std::size_t sizeAddition)
