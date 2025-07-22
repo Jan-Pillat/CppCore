@@ -16,8 +16,9 @@ public:
 	void Remove ();
 
 // ----- SETTERS -----
-	void CreateEmptyData    (const std::size_t lengthOfData);
+	void CreateEmptyData    (const std::size_t    lengthOfData);
 	void ResizeBy           (const std::ptrdiff_t difference);
+	void Resize             (const std::size_t    newLength);
 
 	void SetData            (const char* dataToSet,    const std::size_t lengthOfData);
 	void AppendData         (const char* dataToAppend, const std::size_t lengthOfData);

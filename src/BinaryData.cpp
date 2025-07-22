@@ -43,6 +43,11 @@
 		}
 	}
 
+	void BinaryData::Resize (const size_t newLength)
+	{
+		ResizeBy (newLength - length);
+	}
+
 	void BinaryData::SetData (const char* dataToSet,  const std::size_t lengthOfData)
 	{
 		Remove ();
