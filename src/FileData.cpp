@@ -79,8 +79,6 @@ using std::string;
 
 	FileData::FileData (const char* newData, size_t newDataSize)
 	{
-		Remove ();
-
 		SetData  (newData, newDataSize);
 		isText    = false;
 		lastError = ERR_NO_ERROR;
@@ -88,18 +86,14 @@ using std::string;
 
 	FileData::FileData (const char* newData)
 	{
-		Remove ();
-
-		SetData  (newData, strlen(newData));
+		SetData  (newData, strlen(newData)+1);
 		isText    = true;
 		lastError = ERR_NO_ERROR;
 	}
 
 	FileData::FileData (const string& newData)
 	{
-		Remove ();
-
-		SetData (&newData[0], newData.length());
+		SetData (&newData[0], newData.length()+1);
 		isText    = true;
 		lastError = ERR_NO_ERROR;
 	}
