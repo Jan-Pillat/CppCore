@@ -1,5 +1,5 @@
-#ifndef _CPP_StringUtils_ConvertStringAndWstring_
-#define _CPP_StringUtils_ConvertStringAndWstring_
+#ifndef _CPP_StringUtils_GetFirstNullChar_
+#define _CPP_StringUtils_GetFirstNullChar_
 
 #include "../../include/StringUtils/GetFirstNullChar.hpp"
 
