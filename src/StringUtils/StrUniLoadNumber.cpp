@@ -1,3 +1,7 @@
+#ifndef _CPP_StrUniLoadNumber_
+#define _CPP_StrUniLoadNumber_
+
+#include "../../include/StringUtils/StrUniLoadNumber.hpp"
 
 void ASM_CODE ()
 {
@@ -849,3 +853,5 @@ asm(
     );
 
 }
+
+#endif
