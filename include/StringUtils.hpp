@@ -6,5 +6,6 @@
     #include "StringUtils/ConvertStringAndWstring.hpp"
     #include "StringUtils/GetFirstNullChar.hpp"
     #include "StringUtils/StrUniLoadNumber.hpp"
+    #include "StringUtils/GetUppercase.hpp"
 
 #endif
