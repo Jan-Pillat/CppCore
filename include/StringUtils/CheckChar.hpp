@@ -23,10 +23,18 @@
     #define     IsDigitOrAlpha(char)        isalnum(char)
     #define     IsDigitOrAlphabetic(char)   isalnum(char)
 
+    #define     IsGraphical(char)           isgraph(char)
+    #define     IsControl(char)             iscntrl(char)
     #define     IsBlank(char)               isblank(char)
+    #define     IsSpace(char)               isspace(char)
     #define     IsPunctator(char)           ispunct(char)
     #define     IsPunct(char)               ispunct(char)
     #define     IsAlpha(char)               isalpha(char)
     #define     IsAlphabetic(char)          isalpha(char)
+	
+    #define     IsLower(char)               islower(char)
+    #define     IsUpper(char)               isupper(char)
+    #define     IsLowerCase(char)           islower(char)
+    #define     IsUpperCase(char)           isupper(char)
 
 #endif

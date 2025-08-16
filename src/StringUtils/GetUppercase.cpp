@@ -4,11 +4,12 @@
 
 #include "../../include/StringUtils/GetUppercase.hpp"
 
-#include <algorithm>
+
 std::string GetUppercase (const std::string& s)
 {
     return GetUppercase(&s[0]);
 }
+
 
 std::string GetUppercase (const char* s)
 {
@@ -17,5 +18,6 @@ std::string GetUppercase (const char* s)
 
     return converted;
 }
+
 
 #endif
